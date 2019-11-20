@@ -1,2 +1,2 @@
-# moderngraph
+# ProGraph
 Promatia's API Query Parser &amp; Language
