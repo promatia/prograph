@@ -66,13 +66,13 @@ type CitizenshipData {
 `
 
 const messageResolvers = {
-    async UpdateUser({}){
+    async UpdateUser ({}){
 
     },
-    async User({}){
+    async User ({}){
 
     },
-    async Me({}){
+    async Me ({}){
 
     }
 }
@@ -87,12 +87,12 @@ const directiveResolvers = {
 
 
 const scalarResolvers = {
-    ObjectID: class ObjectID extends Scalar {
-        async incoming(value){
+    ObjectID: class extends Scalar {
+        async incoming (value){
             return new ObjectID(value)
         }
     
-        async outgoing(value){
+        async outgoing (value){
             return String(value)
         }
     }
@@ -106,10 +106,10 @@ let graph = API(new Graph({
 }))
 
 
-async function main(){
+async function main (){
     let msg = {
-        _id: "5d84b5b1e8840b64a03c944a",
-        firstName: "Bill",
+        _id: '5d84b5b1e8840b64a03c944a',
+        firstName: 'Bill',
         email: 'Test',
         friends: {
             test: 1
@@ -135,16 +135,18 @@ main().catch((err)=> {
 })
 
 
-function project(wants, parent = ''){
+function projectField (wants, parent = ''){
     let projectFields = {}
 
-    for(let name in wants){
+    for (let name in wants){
         let want = wants[name]
-        if(parent) name = parent + '.' + name
-        if(want.constructor === Object){
-            Object.assign(projectFields, project(want, name))
-        }else{
+        if (parent) name = parent + '.' + name
+        if (want.constructor === Object){
+            Object.assign(projectFields, projectField(want, name))
+        } else {
             projectFields[name] = 1
         }
     }
 }
+
+projectField

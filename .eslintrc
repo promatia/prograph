@@ -1,20 +1,38 @@
 {
     "parserOptions": {
-        "ecmaVersion": 2017,
+        "ecmaVersion": 2018,
         "sourceType": "module"
     },
     "env": {
         "es6": true
     },
     "rules": {
-        "semi": [
-            2,
-            "never"
-        ],
+        "indent": ["error", 4],
+        "semi": ["error", "never"],
         "quotes": [
-            2,
+            "error",
             "single",
-            "avoid-escape"
-        ]
+            {
+                "avoidEscape": true
+            }
+        ],
+        "arrow-body-style": [
+            "error",
+            "as-needed"
+        ],
+        "no-unused-vars": "error",
+        "keyword-spacing": "error",
+        "space-before-function-paren": "error",
+        "space-infix-ops": "error",
+        "comma-spacing": "error",
+        "brace-style": "error",
+        "operator-linebreak": ["error", "before"],
+        "one-var": ["error", "never"],
+        "block-spacing": "error",
+        "comma-dangle": "error",
+        "comma-style": "error",
+        "dot-location": ["error", "property"],
+        "eol-last": "error",
+        "key-spacing": "error"
     }
 }

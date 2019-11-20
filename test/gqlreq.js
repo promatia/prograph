@@ -8,7 +8,7 @@ function isArray(test){
 }
 
 function isObject(test){
-    return typeof test === "object" && !Array.isArray(test)
+    return typeof test === 'object' && !Array.isArray(test)
 }
 
 function parseArray(array){

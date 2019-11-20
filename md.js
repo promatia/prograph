@@ -1,5 +1,3 @@
-let type = "in" || "out"
-
 class User {
     static async getUser(_id){
         return await User.collection.findOne({_id: })
