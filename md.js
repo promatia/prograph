@@ -7,7 +7,7 @@ class User {
         async updateUser({input, ctx}){
             let { _id } = input
 
-            let user = await User.collection.findOne({_id: })
+            let user = await User.collection.findOne({_id })
         }
     }
 }
