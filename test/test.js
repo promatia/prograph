@@ -1,42 +1,83 @@
 class Model {
-    constructor(document) {
+    constructor (document = {}) {
         this.doc = document
 
         return new Proxy(this, {
-            set: (object, key, value, proxy) => {
-                object.doc[key] = value
+            set (obj, key, value) {
+                if (key === 'doc') {
+                    obj.doc = value
+                    return true
+                }
+                
+                if (Object.getOwnPropertyDescriptor(Object.getPrototypeOf(obj), key)) {
+                    obj[key] = value
+                    return true
+                }
+
+                obj.doc[key] = value
+
                 return true
             },
-            get: (object, key) => {
+            get (obj, key) {
+                if (obj[key]) return obj[key]
 
+                return obj.doc[key]
             }
         })
     }
+
+    async save () {
+        let _id = this.doc._id
+
+        if (_id) {
+            await this.collection.updateOne({_id}, {$set: {...this.doc}}, { upsert: true })
+        } else {
+            let insert = await this.collection.insertOne(this.doc)
+            this.document._id = insert.insertedId
+        }
+    }
 }
 
+function bcrypt (value) {
+    return 'hash' + value
+}
+
+function db () {
+    return {}
+}
 class User extends Model {
+    static collection = db('users')
     static types = `
     type User {
         firstName: String
     }
     `
 
-    set password(value) {
-        console.log(value)
+    async friends ({ after }, { wants }) {
+        this.collection
+            .find({_id: { $in: this.doc.friends }})
+            .project(Only(wants))
+            .sort(-1)
+            .limit(5)
+            .toArray()
     }
 
-    static async User({ _id }, { wants }) {
+    set password (value) {
+        this.doc.password = bcrypt(value)
+    }
+
+    static async User ({ _id }, { wants }) {
 
     }
 }
 
-let user = new User({
-    firstName: "Dominus"
-})
+// let user = new User({
+//     firstName: 'Dominus'
+// })
 
-console.log(User.types)
+// user.password = 'aXXSAS' //hashes password
+// console.log(user.password)
 
-user.a = 3
 
 //****************** */
 
@@ -107,13 +148,20 @@ type CitizenshipData {
 `
 
 const messageResolvers = {
-    async UpdateUser({ }) {
+    async UpdateUser ({_id, firstName, email, friends}) {
+        return {
+            _id,
+            firstName,
+            email,
+            friends (inputs) {
+                console.log(inputs)
+            }
+        }
+    },
+    async User ({ }) {
 
     },
-    async User({ }) {
-
-    },
-    async Me({ }) {
+    async Me ({ }) {
 
     }
 }
@@ -128,11 +176,11 @@ const directiveResolvers = {
 
 const scalarResolvers = {
     ObjectID: class extends Scalar {
-        async incoming(value) {
+        async incoming (value) {
             return new ObjectID(value)
         }
 
-        async outgoing(value) {
+        async outgoing (value) {
             return String(value)
         }
     }
@@ -146,7 +194,7 @@ let graph = Graph(new Builder({
 }))
 
 
-async function main() {
+async function main () {
     let msg = {
         _id: '5d84b5b1e8840b64a03c944a',
         firstName: 'Bill',
@@ -175,18 +223,17 @@ main().catch((err) => {
 })
 
 
-function projectField(wants, parent = '') {
+//project fields
+function Only (wants, parent = '') {
     let projectFields = {}
 
     for (let name in wants) {
         let want = wants[name]
         name = parent + '.' + name
         if (want.constructor === Object) {
-            Object.assign(projectFields, projectField(want, name))
+            Object.assign(projectFields, Only(want, name))
         } else {
             projectFields[name] = 1
         }
     }
 }
-
-projectField

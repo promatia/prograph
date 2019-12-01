@@ -34,6 +34,7 @@
 - DirectivesCalledInOrder
 - DirectivesCalledInParallel
 - MessagesCalledInParallel
+- Returns null for undefined
 
 **Tokenizer**
 - Paths for all errors (or surrounding text)
