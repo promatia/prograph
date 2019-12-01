@@ -1,6 +1,47 @@
-const Graph = require('../lib/graph')
-const API = require('./gqlreq')
-const { Scalar, Directive } = require('../lib/scalar')
+class Model {
+    constructor(document) {
+        this.doc = document
+
+        return new Proxy(this, {
+            set: (object, key, value, proxy) => {
+                object.doc[key] = value
+                return true
+            },
+            get: (object, key) => {
+
+            }
+        })
+    }
+}
+
+class User extends Model {
+    static types = `
+    type User {
+        firstName: String
+    }
+    `
+
+    set password(value) {
+        console.log(value)
+    }
+
+    static async User({ _id }, { wants }) {
+
+    }
+}
+
+let user = new User({
+    firstName: "Dominus"
+})
+
+console.log(User.types)
+
+user.a = 3
+
+//****************** */
+
+const { Builder, Scalar, Directive } = require('..')
+const Graph = require('./gqlreq')
 const { ObjectID } = require('mongodb')
 
 const schema = `
@@ -66,13 +107,13 @@ type CitizenshipData {
 `
 
 const messageResolvers = {
-    async UpdateUser ({}){
+    async UpdateUser({ }) {
 
     },
-    async User ({}){
+    async User({ }) {
 
     },
-    async Me ({}){
+    async Me({ }) {
 
     }
 }
@@ -82,23 +123,22 @@ const directiveResolvers = {
     isAuthenticated: Directive,
     lowercase: Directive,
     email: Directive
-
 }
 
 
 const scalarResolvers = {
     ObjectID: class extends Scalar {
-        async incoming (value){
+        async incoming(value) {
             return new ObjectID(value)
         }
-    
-        async outgoing (value){
+
+        async outgoing(value) {
             return String(value)
         }
     }
 }
 
-let graph = API(new Graph({
+let graph = Graph(new Builder({
     schema,
     messageResolvers,
     directiveResolvers,
@@ -106,7 +146,7 @@ let graph = API(new Graph({
 }))
 
 
-async function main (){
+async function main() {
     let msg = {
         _id: '5d84b5b1e8840b64a03c944a',
         firstName: 'Bill',
@@ -130,18 +170,18 @@ async function main (){
     `
 }
 
-main().catch((err)=> {
+main().catch((err) => {
     console.error(err)
 })
 
 
-function projectField (wants, parent = ''){
+function projectField(wants, parent = '') {
     let projectFields = {}
 
-    for (let name in wants){
+    for (let name in wants) {
         let want = wants[name]
-        if (parent) name = parent + '.' + name
-        if (want.constructor === Object){
+        name = parent + '.' + name
+        if (want.constructor === Object) {
             Object.assign(projectFields, projectField(want, name))
         } else {
             projectFields[name] = 1
