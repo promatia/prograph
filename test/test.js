@@ -122,7 +122,7 @@ message UpdateUser (
     firstName: String @cost(cost: 20)
     lastName: String
     email: String! @lowercase @email
-    friends: FriendsInput
+    friends: [FriendsInput]
 ): User @cost(cost: 5, multipliers: ["friends"]) @hasScope(scope: "updateProfile")
 
 message User (_id: ObjectID): User @hasScope(scope: "viewProfile") 
@@ -199,9 +199,9 @@ async function main () {
         _id: '5d84b5b1e8840b64a03c944a',
         firstName: 'Bill',
         email: 'Test',
-        friends: {
+        friends: [{
             test: 1
-        }
+        }]
     }
 
     await graph`
