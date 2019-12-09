@@ -158,7 +158,7 @@ const messageResolvers = {
             firstName,
             email,
             friends () {
-                return { items: ['sdas']}
+                return { items: ['sdas', {lalaa: 'sda', 'firstName': 'Billy'}, {}]}
             }
         }
     },
@@ -231,7 +231,7 @@ async function main () {
         }
     `
 
-    console.log(result.UpdateUser)
+    console.log(result.UpdateUser.friends)
 }
 
 main().catch((err) => {
