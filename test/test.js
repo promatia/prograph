@@ -92,6 +92,7 @@ directive isAuthenticated INPUT FIELD OBJECT
 directive hasScope(scope: String!) INPUT FIELD OBJECT
 directive lowercase INPUT
 directive email INPUT
+directive max INPUT
 
 type PaginationInput {
     limit: Number @max(amount: 50)
@@ -113,6 +114,23 @@ type Session {
     Agent: String
 }
 
+
+type User {
+    _id: ObjectID
+    firstName: String
+    lastName: String
+    email: String
+    roles: [String]
+    fullName: String @deprecated(reason: "Use firstName and lastName")
+    friends (test: ObjectID, PaginationInput: PaginationInput): CursorPaginator[User]
+    citizenshipData: CitizenshipData @cost(multiplyParent: true)
+    sessions (PaginationInput: PaginationInput): CursorPaginator[Session]
+}
+
+type CitizenshipData {
+    accepted: Number
+}
+
 type FriendsInput {
     test: Number
 }
@@ -129,32 +147,19 @@ message User (_id: ObjectID): User @hasScope(scope: "viewProfile")
 
 message Me: User @isAuthenticated
 
-type User {
-    _id: ObjectID
-    firstName: String
-    lastName: String
-    email: String
-    roles: [String]
-    fullName: String @deprecated(reason: "Use firstName and lastName")
-    friends(test: ObjectID, ...PaginationInput): CursorPaginator[User]
-    citizenshipData: CitizenshipData @cost(multiplyParent: true)
-    sessions(...PaginationInput): CursorPaginator[Session]
-}
 
-type CitizenshipData {
-    accepted: Number
-}
 
 `
 
 const messageResolvers = {
-    async UpdateUser ({_id, firstName, email, friends}) {
+    async UpdateUser ({_id, firstName, email}) {
         return {
             _id,
             firstName,
             email,
             friends (inputs) {
-                console.log(inputs)
+                console.log('friendsResolverCalled')
+                return { items: ['sdas']}
             }
         }
     },
@@ -169,14 +174,24 @@ const messageResolvers = {
 const directiveResolvers = {
     hasScope: Directive,
     isAuthenticated: Directive,
-    lowercase: Directive,
-    email: Directive
+    lowercase: class Lowercase extends Directive {
+        async inputVisitor ({value}) {
+            return value.toLowerCase()
+        }
+    },
+    email: Directive,
+    max: class Max extends Directive {
+        async inputVisitor ({value, args}) {
+            if(value > args.amount.value) throw new Error(`Input: ${value} exceeds max: ${args.amount.value}`)
+            return value
+        }
+    }
 }
 
 
 const scalarResolvers = {
     ObjectID: class extends Scalar {
-        async incoming (value) {
+        async incoming ({value}) {
             return new ObjectID(value)
         }
 
@@ -204,18 +219,20 @@ async function main () {
         }]
     }
 
-    await graph`
+    let result = await graph`
         message UpdateUser (${msg}) {
             _id
             firstName
             roles
-            friends(limit: 5) {
+            friends(PaginationInput: {limit: 5}) {
                 items {
                     firstName
                 }
             }
         }
     `
+
+    console.log(result.UpdateUser)
 }
 
 main().catch((err) => {
