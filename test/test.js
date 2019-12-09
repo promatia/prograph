@@ -157,8 +157,7 @@ const messageResolvers = {
             _id,
             firstName,
             email,
-            friends (inputs) {
-                console.log('friendsResolverCalled')
+            friends () {
                 return { items: ['sdas']}
             }
         }
