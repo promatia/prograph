@@ -82,7 +82,7 @@ class User extends Model {
 //****************** */
 
 const { Builder, Scalar, Directive } = require('..')
-const Graph = require('./gqlreq')
+const Graph = require('./graph')
 const { ObjectID } = require('mongodb')
 
 const schema = `
