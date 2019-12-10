@@ -1,42 +1,4 @@
-class Model {
-    constructor (document = {}) {
-        this.doc = document
 
-        return new Proxy(this, {
-            set (obj, key, value) {
-                if (key === 'doc') {
-                    obj.doc = value
-                    return true
-                }
-                
-                if (Object.getOwnPropertyDescriptor(Object.getPrototypeOf(obj), key)) {
-                    obj[key] = value
-                    return true
-                }
-
-                obj.doc[key] = value
-
-                return true
-            },
-            get (obj, key) {
-                if (obj[key]) return obj[key]
-
-                return obj.doc[key]
-            }
-        })
-    }
-
-    async save () {
-        let _id = this.doc._id
-
-        if (_id) {
-            await this.collection.updateOne({_id}, {$set: {...this.doc}}, { upsert: true })
-        } else {
-            let insert = await this.collection.insertOne(this.doc)
-            this.document._id = insert.insertedId
-        }
-    }
-}
 
 function bcrypt (value) {
     return 'hash' + value
@@ -45,31 +7,7 @@ function bcrypt (value) {
 function db () {
     return {}
 }
-class User extends Model {
-    static collection = db('users')
-    static types = `
-    type User {
-        firstName: String
-    }
-    `
 
-    async friends ({ after }, { wants }) {
-        this.collection
-            .find({_id: { $in: this.doc.friends }})
-            .project(Only(wants))
-            .sort(-1)
-            .limit(5)
-            .toArray()
-    }
-
-    set password (value) {
-        this.doc.password = bcrypt(value)
-    }
-
-    static async User ({ _id }, { wants }) {
-
-    }
-}
 
 // let user = new User({
 //     firstName: 'Dominus'
@@ -82,7 +20,7 @@ class User extends Model {
 //****************** */
 
 const { Builder, Scalar, Directive } = require('..')
-const Graph = require('./graph')
+const Graph = require('../lib/graph')
 const { ObjectID } = require('mongodb')
 
 const schema = `
