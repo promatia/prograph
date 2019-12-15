@@ -1,8 +1,8 @@
 {
-    "name": "prograph",
-    "version": "0.0.4",
+    "name": "@promatia/prograph",
+    "version": "0.0.6",
     "description": "Fast query language parser",
-    "main": "lib/index.js",
+    "main": "index.js",
     "dependencies": {},
     "type": "module",
     "devDependencies": {
