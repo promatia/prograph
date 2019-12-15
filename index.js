@@ -1,9 +1,5 @@
-
-
-module.exports = {
-    Builder: require('./lib/builder'),
-    Scalar: require('./lib/scalar'),
-    Directive: require('./lib/directive'),
-    GraphError: require('./lib/GraphError'),
-    graph: require('./lib/graph')
-}
+export { default as Builder } from './lib/builder.js'
+export { default as Scalar } from './lib/scalar.js'
+export { default as Directive } from './lib/directive.js'
+export { default as GraphError } from './lib/GraphError.js'
+export { default as Graph } from './lib/graph.js'

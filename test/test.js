@@ -1,27 +1,10 @@
 
-
-function bcrypt (value) {
-    return 'hash' + value
-}
-
-function db () {
-    return {}
-}
-
-
-// let user = new User({
-//     firstName: 'Dominus'
-// })
-
-// user.password = 'aXXSAS' //hashes password
-// console.log(user.password)
-
-
 //****************** */
 
-const { Builder, Scalar, Directive } = require('..')
-const Graph = require('../lib/graph')
-const { ObjectID } = require('mongodb')
+import { Builder, Scalar, Directive, Graph } from '../index.js'
+import mongodb from 'mongodb'
+
+const { ObjectID } = mongodb
 
 const schema = `
 scalar ObjectID
