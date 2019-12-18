@@ -1,7 +1,8 @@
 
 //****************** */
 
-import { Builder, Scalar, Directive, Graph } from '../index.js'
+import { Builder, Scalar, Directive } from '../index.js'
+import Graph from './graph.js'
 import mongodb from 'mongodb'
 
 const { ObjectID } = mongodb
@@ -59,7 +60,7 @@ type FriendsInput {
 message UpdateUser (
     _id: ObjectID
     firstName: String @cost(cost: 20)
-    lastName: String
+    lastName: String!
     email: String! @lowercase @email
     friends: [FriendsInput]
 ): User @cost(cost: 5, multipliers: ["friends"]) @hasScope(scope: "updateProfile")
@@ -133,6 +134,7 @@ async function main () {
     let msg = {
         _id: '5d84b5b1e8840b64a03c944a',
         firstName: 'Bill',
+        lastName: null,
         email: 'Test',
         friends: [{
             test: 1
