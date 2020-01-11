@@ -37,6 +37,13 @@
 - Returns null for undefined always
 - Iterates non-array iterable
 - Resolves instanceof Object for types
+- message returns array type
+  - primitive subtype
+  - scalar subtype
+  - type subtype
+- message returns scalar
+- message returns primitive
+- message returns type
 
 **Tokenizer**
 - Paths for all errors (or surrounding text)
