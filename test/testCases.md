@@ -44,6 +44,7 @@
 - message returns scalar
 - message returns primitive
 - message returns type
+- support aliases
 
 **Tokenizer**
 - Paths for all errors (or surrounding text)

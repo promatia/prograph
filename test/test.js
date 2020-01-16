@@ -134,7 +134,7 @@ async function main () {
     let msg = {
         _id: '5d84b5b1e8840b64a03c944a',
         firstName: 'Bill',
-        lastName: null,
+        lastName: 'test',
         email: 'Test',
         friends: [{
             test: 1
