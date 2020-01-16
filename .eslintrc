@@ -23,7 +23,6 @@
         "comma-spacing": "error",
         "brace-style": "error",
         "operator-linebreak": ["error", "before"],
-        "one-var": ["error", "never"],
         "block-spacing": "error",
         "comma-dangle": "error",
         "comma-style": "error",

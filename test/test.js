@@ -152,9 +152,13 @@ async function main () {
                 }
             }
         }
+
+        message aliasTest: UpdateUser(${msg}){
+            _id
+        }
     `
 
-    console.log(result.UpdateUser.friends)
+    console.log(result)
 }
 
 main().catch((err) => {

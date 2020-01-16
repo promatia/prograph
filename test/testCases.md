@@ -37,7 +37,7 @@
 - Returns null for undefined always
 - Iterates non-array iterable
 - Resolves instanceof Object for types
-- message returns array type
+- message can return array type
   - primitive subtype
   - scalar subtype
   - type subtype
@@ -45,6 +45,9 @@
 - message returns primitive
 - message returns type
 - support aliases
+- supports async resolvers
+- supports sync resolvers
+- supports default field value resolver
 
 **Tokenizer**
 - Paths for all errors (or surrounding text)
